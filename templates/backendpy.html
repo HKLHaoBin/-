@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>域中传文件-双向</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f2f2f7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+            flex-direction: column;
+            background: linear-gradient(120deg, #f0f3f5, #ffffff);
+            flex-wrap: wrap;
+            align-content: space-between;
+        }
+
+            /* 让表单固定在页面顶部或底部 */
+        #dataForm, #uploadForm {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+
+        /* 让表单固定在页面顶部或底部 */
+        #datauploadForm {
+            position: fixed;
+            top: 20%;
+            left: 64%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 500px;
+            /* background-color: white; */
+            padding: 20px;
+            border-radius: 15px;
+            /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); */
+            z-index: 1000;
+        }
+
+
+        /* 保持现有样式 */
+        textarea {
+            width: 93%;
+            font-size: 18px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            resize: none;
+            height: 100px;
+            background-color: #f9f9f9;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: #007aff;
+            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
+            outline: none;
+        }
+
+        button {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005fdb;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #uploadStatus {
+            margin-top: 10px;
+            color: #28a745;
+            transition: opacity 0.3s ease;
+        }
+
+        /* 为了让内容不会被固定的表单遮挡，添加一些额外的间距 */
+        body {
+            padding-top: 200px; /* 确保页面内容不会被顶部固定的表单遮挡 */
+            padding-bottom: 200px; /* 确保页面内容不会被底部固定的表单遮挡 */
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            display: block;
+            background-color: #e0e0e5;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label:hover {
+            background-color: #d1d1d5;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+
+        h3 {
+            color: #333;
+            font-weight: 600;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin: 10px 0;
+            background-color: #fff;
+            padding: 10px 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        ul li:hover {
+            transform: scale(1.02);
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: #007aff;
+            font-weight: 500;
+        }
+
+        ul li a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 文件下载部分 -->
+    <ul id="fileList">
+        <!-- 这里将通过JS动态加载文件列表 -->
+    </ul>
+
+    <div id="datauploadForm">
+        <form id="dataForm">
+            <textarea id="dataInput" placeholder="请输入数据" onblur="handleSend()"></textarea>
+            <div id="resultContainer" class="fade-out">{{ useu }}</div>
+            <button type="button" id="copyButton" onclick="copyToClipboard()">复制</button>
+        </form>
+    
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="fileInput">选择文件</label>
+            <input type="file" id="fileInput" name="file"/>
+            <button type="button" onclick="uploadFile()">上传文件</button>
+            <div id="uploadStatus"></div>
+        </form>
+    </div>
+
+    <script>
+        function handleSend() {
+            var data = document.getElementById('dataInput').value;
+            var resultContainer = document.getElementById('resultContainer');
+            
+            if (data.trim() === '') {
+                resultContainer.classList.add('fade-out');
+                return;
+            }
+
+            fetch('/api/get_role', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: data })
+            }).then(response => response.json())
+            .then(data => {
+                console.log('服务器响应:', data.useu);
+                resultContainer.innerText = data.useu;
+                resultContainer.classList.remove('fade-out');
+                resultContainer.classList.add('fade-in');
+            }).catch(error => {
+                console.error('发送失败:', error);
+            });
+        }
+
+        function copyToClipboard() {
+            var content = document.getElementById("resultContainer").innerText;
+            var tempInput = document.createElement("textarea");
+            tempInput.value = content;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            alert("内容已复制到剪贴板!");
+        }
+
+        function uploadFile() {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+
+            if (!file) {
+                alert("请选择文件后再上传");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('上传响应:', data);
+                var uploadStatus = document.getElementById('uploadStatus');
+                uploadStatus.innerText = data.message;
+                uploadStatus.style.opacity = 1;
+                loadFiles();  // 上传后重新加载文件列表
+            })
+            .catch(error => {
+                console.error('上传失败:', error);
+                var uploadStatus = document.getElementById('uploadStatus');
+                uploadStatus.innerText = '文件上传失败';
+                uploadStatus.style.opacity = 1;
+            });
+        }
+
+        // 加载文件列表
+        function loadFiles() {
+            fetch('/files')
+                .then(response => response.json())
+                .then(files => {
+                    var fileList = document.getElementById('fileList');
+                    fileList.innerHTML = '';  // 清空列表
+
+                    files.forEach(function(file) {
+                        var li = document.createElement('li');
+                        var link = document.createElement('a');
+                        link.href = '/download/' + file;
+                        link.innerText = file;
+                        link.download = file;
+                        li.appendChild(link);
+                        fileList.appendChild(li);
+                    });
+                });
+        }
+
+        // 页面加载时获取文件列表
+        window.onload = function() {
+            loadFiles();
+        }
+    </script>
+
+</body>
+</html>
