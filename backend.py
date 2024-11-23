@@ -89,23 +89,21 @@ def handle_role_request():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        print("没有收到文件部分")
         return jsonify({'message': 'No file part in the request'}), 400
-    file = request.files['file']
-    print(f"收到的文件: {file.filename}")  # 添加日志
-    if file.filename == '':
-        return jsonify({'message': 'No selected file'}), 400
-    if file:
-        # 保存上传的文件
+
+    files = request.files.getlist('file')  # 获取多个文件
+    uploaded_files = []
+
+    for file in files:
+        if file.filename == '':
+            continue
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(file_path)
-        print(f"文件已保存: {file.filename}")
+        uploaded_files.append(file.filename)
 
-        # 通知所有客户端文件上传成功
-        socketio.emit('file_uploaded', {'filename': file.filename})
+    socketio.emit('file_uploaded', {'filenames': uploaded_files})
+    return jsonify({'message': 'Files uploaded successfully', 'filenames': uploaded_files}), 200
 
-        # 返回成功信息
-        return jsonify({'message': 'File uploaded successfully', 'filename': file.filename}), 200
 
 # 列出文件夹及其嵌套内容
 @app.route('/files')
