@@ -350,7 +350,7 @@
                 <div class="file-button">
                     <label for="fileInput">选择文件</label><button type="button" onclick="uploadFile()">上传文件</button>
                 </div>
-                <input type="file" id="fileInput" name="file"/>
+                <input type="file" id="fileInput" name="file" multiple />
                 
                 <div id="uploadStatus"></div>
             </form>
@@ -480,104 +480,97 @@
 
         function uploadFile() {
     var fileInput = document.getElementById('fileInput');
-    var file = fileInput.files[0];
+    var files = fileInput.files;
 
-    if (!file) {
+    if (!files.length) {
         alert("请选择文件后再上传");
         return;
     }
 
     var uploadStatus = document.getElementById('uploadStatus');
     uploadStatus.innerHTML = ''; // 清空状态
-    uploadStatus.style.display = 'block';
 
-    // 创建进度条容器
-    var progressBar = document.createElement('div');
-    progressBar.style.width = '100%';
-    progressBar.style.background = '#f3f3f3';
-    progressBar.style.border = '1px solid #ccc';
-    progressBar.style.borderRadius = '5px';
-    progressBar.style.marginTop = '10px';
-    progressBar.style.position = 'relative';
-    progressBar.style.overflow = 'hidden';
-    progressBar.style.height = '30px';
+    Array.from(files).forEach((file, index) => {
+        var formData = new FormData();
+        formData.append('file', file);
 
-    // 创建进度条
-    var progress = document.createElement('div');
-    progress.style.height = '100%';
-    progress.style.background = 'linear-gradient(90deg, #4caf50, #81c784)';
-    progress.style.width = '0%';
-    progress.style.borderRadius = '5px';
-    progress.style.textAlign = 'center';
-    progress.style.color = '#fff';
-    progress.style.fontWeight = 'bold';
-    progress.style.transition = 'width 0.2s ease';
-    progressBar.appendChild(progress);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload', true);
 
-    // 创建速度显示
-    var speedText = document.createElement('span');
-    speedText.style.position = 'absolute';
-    speedText.style.right = '10px';
-    speedText.style.top = '5px';
-    speedText.style.color = '#555';
-    speedText.style.fontSize = '12px';
+        // 创建一个新的上传状态显示
+        var fileStatus = document.createElement('div');
+        fileStatus.innerHTML = `<p>上传文件：${file.name}</p>`;
+        uploadStatus.appendChild(fileStatus);
 
-    progressBar.appendChild(speedText);
-    uploadStatus.appendChild(progressBar);
+        // 添加进度条
+        var progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+        var progress = document.createElement('div');
+        progress.style.width = '0%';
+        progressBar.appendChild(progress);
 
-    var formData = new FormData();
-    formData.append('file', file);
+        // 添加速度显示
+        var speedText = document.createElement('span');
+        speedText.style.position = 'absolute';
+        speedText.style.right = '10px';
+        speedText.style.top = '5px';
+        speedText.style.color = '#555';
+        speedText.style.fontSize = '12px';
+        progressBar.appendChild(speedText);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/upload', true);
+        fileStatus.appendChild(progressBar);
 
-    // 定义起始时间和已上传数据
-    var startTime = Date.now();
-    var uploadedBytes = 0;
+        // 初始化时间和上传数据
+        var startTime = Date.now();
+        var uploadedBytes = 0;
 
-    // 监听上传进度事件
-    xhr.upload.onprogress = function (event) {
-        if (event.lengthComputable) {
-            var percent = Math.round((event.loaded / event.total) * 100);
-            progress.style.width = percent + '%';
-            progress.innerText = percent + '%';
+        // 上传进度
+        xhr.upload.onprogress = function (event) {
+            if (event.lengthComputable) {
+                var percent = Math.round((event.loaded / event.total) * 100);
+                progress.style.width = percent + '%';
+                progress.innerText = percent + '%';
 
-            // 计算上传速度
-            var currentTime = Date.now();
-            var timeElapsed = (currentTime - startTime) / 1000; // 秒
-            var currentUploaded = event.loaded;
-            var speed = ((currentUploaded - uploadedBytes) / 1024) / (timeElapsed || 1); // kB/s
-            uploadedBytes = currentUploaded;
+                // 计算上传速度
+                var currentTime = Date.now();
+                var timeElapsed = (currentTime - startTime) / 1000; // 秒
+                var currentUploaded = event.loaded;
+                var speed = ((currentUploaded - uploadedBytes) / 1024) / (timeElapsed || 1); // kB/s
+                uploadedBytes = currentUploaded;
 
-            // 格式化速度
-            var speedTextContent = speed > 1024
-                ? (speed / 1024).toFixed(2) + ' MB/s'
-                : speed.toFixed(2) + ' kB/s';
-            speedText.innerText = speedTextContent;
+                // 格式化速度
+                var speedTextContent = speed > 1024
+                    ? (speed / 1024).toFixed(2) + ' MB/s'
+                    : speed.toFixed(2) + ' kB/s';
+                speedText.innerText = speedTextContent;
 
-            // 重置时间和起始点
-            startTime = currentTime;
-        }
-    };
+                // 重置时间和上传起点
+                startTime = currentTime;
+            }
+        };
 
-    // 上传完成
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            uploadStatus.innerHTML = "<p style='color: green;'>文件上传成功！</p>";
-            loadFiles(); // 刷新文件列表
-        } else {
-            uploadStatus.innerHTML = "<p style='color: red;'>文件上传失败，请重试。</p>";
-        }
-    };
+        // 上传完成
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                progress.style.backgroundColor = '#4caf50';
+                fileStatus.innerHTML += "<p style='color: green;'>上传成功！</p>";
+            } else {
+                progress.style.backgroundColor = '#f44336';
+                fileStatus.innerHTML += "<p style='color: red;'>上传失败。</p>";
+            }
+        };
 
-    // 上传失败
-    xhr.onerror = function () {
-        uploadStatus.innerHTML = "<p style='color: red;'>文件上传失败，网络错误。（重新选择文件再上传试试）</p>";
-    };
+        xhr.onerror = function () {
+            progress.style.backgroundColor = '#f44336';
+            fileStatus.innerHTML += "<p style='color: red;'>上传失败，请检查网络。</p>";
+        };
 
-    // 开始上传
-    xhr.send(formData);
+        // 发送请求
+        xhr.send(formData);
+    });
 }
+
+
 
 
         // 页面加载时获取文件列表
