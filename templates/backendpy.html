@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>域中传文件-双向</title>
     <style>
+        /* 公共样式 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #f2f2f7;
@@ -17,39 +18,70 @@
             box-sizing: border-box;
             flex-direction: column;
             background: linear-gradient(120deg, #f0f3f5, #ffffff);
-            flex-wrap: wrap;
-            align-content: space-between;
+            transition: all 1s ease;
         }
+
+        /* 公共表单样式 */
+        /* 公共表单样式 */
+        #datauploadForm {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 1000;
+            transition: all 1s ease;
+        }
+
+        /* 针对电脑端的大屏幕样式 */
+        @media (min-width: 768px) {
+            #datauploadForm {
+                position: fixed;
+                top: 0;
+                right: 1%;
+                width: 45%;
+                transition: all 1s ease;
+            }
+
+            body {
+                flex-wrap: wrap;
+                align-content: space-between;
+                transition: all 1s ease;
+            }
+            #fileList{
+                width:45%;
+                transition: all 1s ease;
+            }
+
+        }
+
+        /* 手机端 */
+        @media (max-width: 767px) {
+            #datauploadForm {
+                width: 90%; /* 限制宽度为90%，避免内容过宽 */
+                margin: 0 auto; /* 居中对齐 */
+                position: relative;
+                top: 0;
+                left: 0;
+                transition: all 1s ease;
+            }
+            
+        }
+
+
+            
+            
 
             /* 让表单固定在页面顶部或底部 */
-        #dataForm, #uploadForm {
-            background-color: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-
-
-        /* 让表单固定在页面顶部或底部 */
-        #datauploadForm {
-            position: fixed;
-            top: 20%;
-            left: 64%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 500px;
-            /* background-color: white; */
-            padding: 20px;
-            border-radius: 15px;
-            /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); */
-            z-index: 1000;
-        }
-
-
+            #dataForm, #uploadForm {
+                background-color: white;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                /* width: 100%; */
+                max-width: 460px;
+                margin-bottom: 20px;
+                transition: all 1s ease;
+            }
         /* 保持现有样式 */
         textarea {
             width: 93%;
@@ -61,13 +93,15 @@
             resize: none;
             height: 100px;
             background-color: #f9f9f9;
-            transition: border 0.3s ease, box-shadow 0.3s ease;
+            transition: border 1s ease, box-shadow 1s ease;
+            transition: all 1s ease;
         }
 
         textarea:focus {
             border-color: #007aff;
             box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
             outline: none;
+            transition: all 1s ease;
         }
 
         button {
@@ -79,140 +113,260 @@
             border-radius: 12px;
             cursor: pointer;
             margin-top: 10px;
-            width: 100%;
-            transition: transform 0.2s ease, background-color 0.3s ease;
+            width: 60%;
+            height: 43px;
+            font-size: 16px;
+            transition: transform 0.2s ease, background-color 1s ease;
+            transition: all 1s ease;
         }
 
         button:hover {
             background-color: #005fdb;
+            transition: all 1s ease;
         }
 
         button:active {
             transform: scale(0.98);
+            transition: all 1s ease;
         }
 
         #uploadStatus {
             margin-top: 10px;
             color: #28a745;
-            transition: opacity 0.3s ease;
+            transition: opacity 1s ease;
+            transition: all 1s ease;
         }
 
         /* 为了让内容不会被固定的表单遮挡，添加一些额外的间距 */
         body {
             padding-top: 200px; /* 确保页面内容不会被顶部固定的表单遮挡 */
             padding-bottom: 200px; /* 确保页面内容不会被底部固定的表单遮挡 */
+            transition: all 1s ease;
         }
 
         input[type="file"] {
             display: none;
+            transition: all 1s ease;
         }
 
         label {
             display: block;
+            margin: 10px;
+            width: 50%;
             background-color: #e0e0e5;
             padding: 10px 15px;
             border-radius: 10px;
             cursor: pointer;
             text-align: center;
-            transition: background-color 0.3s ease;
+            transition: background-color 1s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 1s ease;
         }
 
         label:hover {
             background-color: #d1d1d5;
+            transition: all 1s ease;
         }
 
         .fade-in {
-            animation: fadeIn 0.3s ease forwards;
+            animation: fadeIn 1s ease forwards;
+            transition: all 1s ease;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
+                transition: all 1s ease;
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
+                transition: all 1s ease;
             }
         }
 
         .fade-out {
-            animation: fadeOut 0.3s ease forwards;
+            animation: fadeOut 1s ease forwards;
+            transition: all 1s ease;
         }
 
         @keyframes fadeOut {
             from {
                 opacity: 1;
                 transform: translateY(0);
+                transition: all 1s ease;
             }
             to {
                 opacity: 0;
                 transform: translateY(10px);
+                transition: all 1s ease;
             }
         }
 
         h3 {
             color: #333;
             font-weight: 600;
+            transition: all 1s ease;
         }
 
         ul {
             list-style-type: none;
             padding: 0;
+            transition: all 1s ease;
         }
 
         ul li {
             margin: 10px 0;
+            max-width: 100%;
             background-color: #fff;
             padding: 10px 15px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            transition: all 1s ease;
         }
 
         ul li:hover {
             transform: scale(1.02);
+            transition: all 1s ease;
         }
 
         ul li a {
             text-decoration: none;
             color: #007aff;
             font-weight: 500;
+            transition: all 1s ease;
         }
 
         ul li a:hover {
             text-decoration: underline;
+            transition: all 1s ease;
         }
+
+        /* 初始样式：透明度为0 */
+        .file-item {
+            opacity: 0;
+            transition: all 1s ease;
+        }
+
+        /* 文件夹样式 */
+        .folder-item {
+            background-color: #e0f7fa; /* 浅蓝色背景 */
+            color: #00796b; /* 深蓝绿色文本 */
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 5px 0;
+            transition: all 1s ease;
+            display: block;
+        }
+
+        /* 文件样式 */
+        .file-item {
+            background-color: #c8f4f8e8; /* 浅粉色背景 */
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 5px 0;
+            display: block;
+            opacity: 0;
+            transition: all 1s ease;
+        }
+
+        /* 样式用于文件夹的子列表 */
+        .folder-contents {
+            max-height: 0;
+            overflow: hidden; 
+            transition: all 1s ease;
+        }
+
+        /* 添加展开样式，最大高度设为一个较大的值 */
+        .folder-contents.open {
+            max-height: 500px; /* 根据需要调整高度 */
+            overflow-y: auto;  /* 当内容超过高度时显示垂直滚动条 */
+            transition: all 1s ease;
+        }
+        .file-button {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+
+        /* 进度条的容器样式 */
+        #uploadStatus {
+            margin-top: 10px;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* 进度条容器样式 */
+.progress-bar {
+    width: 100%;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    height: 30px;
+    margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 进度条样式 */
+.progress-bar > div {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #81c784);
+    color: white;
+    text-align: center;
+    line-height: 30px;
+    width: 0%;
+    border-radius: 5px;
+    transition: width 0.2s ease, background 0.4s ease;
+    font-weight: bold;
+}
+
+/* 速度显示 */
+.progress-bar span {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 12px;
+    color: #555;
+    font-family: Arial, sans-serif;
+}
+
+
 
     </style>
 </head>
 <body>
-    <!-- 文件下载部分 -->
-    <ul id="fileList">
-        <!-- 这里将通过JS动态加载文件列表 -->
-    </ul>
+
 
     <div id="datauploadForm">
         <form id="dataForm">
             <textarea id="dataInput" placeholder="请输入数据" onblur="handleSend()"></textarea>
             <div id="resultContainer" class="fade-in">{{ useu }}</div>
-            <button type="button" id="copyButton" onclick="copyToClipboard()">复制</button>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="file-button">
+                    <label for="fileInput">选择文件</label><button type="button" onclick="uploadFile()">上传文件</button>
+                </div>
+                <input type="file" id="fileInput" name="file"/>
+                
+                <div id="uploadStatus"></div>
+            </form>
         </form>
-    
-        <form id="uploadForm" enctype="multipart/form-data">
-            <label for="fileInput">选择文件</label>
-            <input type="file" id="fileInput" name="file"/>
-            <button type="button" onclick="uploadFile()">上传文件</button>
-            <div id="uploadStatus"></div>
-        </form>
-    </div>
 
+    </div>
+    <!-- 文件下载部分 -->
+    <ul id="fileList">
+        <!-- 这里将通过JS动态加载文件列表 -->
+    </ul>
     <!-- 引入 Socket.IO 客户端库 -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
     <script>
         var socket = io();  // 初始化 Socket.IO 客户端
+        
 
         // 监听 'file_uploaded' 事件，实时更新文件列表
         socket.on('file_uploaded', function (data) {
@@ -220,25 +374,72 @@
             loadFiles();  // 重新加载文件列表
         });
 
-        // 加载文件列表
+       // 加载文件夹内容并显示到页面
         function loadFiles() {
             fetch('/files')
                 .then(response => response.json())
                 .then(files => {
-                    var fileList = document.getElementById('fileList');
+                    const fileList = document.getElementById('fileList');
                     fileList.innerHTML = '';  // 清空列表
-
-                    files.forEach(function(file) {
-                        var li = document.createElement('li');
-                        var link = document.createElement('a');
-                        link.href = '/download/' + file;
-                        link.innerText = file;
-                        link.download = file;
-                        li.appendChild(link);
-                        fileList.appendChild(li);
-                    });
+                    renderFileList(files, fileList);  // 渲染文件列表
                 });
         }
+
+        // 递归渲染文件和文件夹列表
+        function renderFileList(files, container, parentPath = '') {
+            files.forEach((file, index) => {
+                const li = document.createElement('li');
+
+                if (file.is_folder) {
+                    // 如果是文件夹，添加展开/收起功能
+                    li.classList.add('folder-item'); // 文件夹样式
+                    const folderLink = document.createElement('a');
+                    folderLink.href = '#';
+                    folderLink.innerText = file.name;
+                    folderLink.onclick = function(event) {
+                        event.preventDefault();
+                        if (li.classList.contains('open')) {
+                            // 收起文件夹
+                            li.classList.remove('open');
+                            const sublist = li.querySelector('ul');
+                            if (sublist) {
+                                sublist.classList.remove('open');
+                                setTimeout(() => sublist.remove());  // 延迟以配合收起动画
+                            }
+                        } else {
+                            // 展开文件夹
+                            li.classList.add('open');
+                            const sublist = document.createElement('ul');
+                            sublist.classList.add('folder-contents', 'open'); // 添加类，用于动画效果
+                            li.appendChild(sublist);
+
+                            // 递归渲染子文件夹内容，并添加透明度动画
+                            renderFileList(file.children, sublist, `${parentPath}${file.name}/`);
+                        }
+                    };
+                    li.appendChild(folderLink);
+                } else {
+                    // 如果是文件，设置下载链接
+                    li.classList.add('file-item'); // 文件样式
+                    const fileLink = document.createElement('a');
+                    fileLink.href = '/download/' + encodeURIComponent(parentPath + file.name);
+                    fileLink.innerText = file.name;
+                    fileLink.download = file.name;
+                    li.appendChild(fileLink);
+                }
+
+                container.appendChild(li);
+
+                // 添加逐步延迟来控制透明度显示
+                setTimeout(() => {
+                    li.style.opacity = 1;
+                }, index * 10);  // 每个文件项延迟100ms
+            });
+        }
+        // 页面加载时获取文件列表
+        window.onload = function() {
+            loadFiles();
+        };
 
         function handleSend() {
             var data = document.getElementById('dataInput').value;
@@ -278,35 +479,106 @@
         }
 
         function uploadFile() {
-            var fileInput = document.getElementById('fileInput');
-            var file = fileInput.files[0];
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0];
 
-            if (!file) {
-                alert("请选择文件后再上传");
-                return;
-            }
+    if (!file) {
+        alert("请选择文件后再上传");
+        return;
+    }
 
-            var formData = new FormData();
-            formData.append('file', file);
+    var uploadStatus = document.getElementById('uploadStatus');
+    uploadStatus.innerHTML = ''; // 清空状态
+    uploadStatus.style.display = 'block';
 
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('上传响应:', data);
-                var uploadStatus = document.getElementById('uploadStatus');
-                uploadStatus.innerText = data.message;
-                uploadStatus.style.opacity = 1;
-            })
-            .catch(error => {
-                console.error('上传失败:', error);
-                var uploadStatus = document.getElementById('uploadStatus');
-                uploadStatus.innerText = '文件上传失败';
-                uploadStatus.style.opacity = 1;
-            });
+    // 创建进度条容器
+    var progressBar = document.createElement('div');
+    progressBar.style.width = '100%';
+    progressBar.style.background = '#f3f3f3';
+    progressBar.style.border = '1px solid #ccc';
+    progressBar.style.borderRadius = '5px';
+    progressBar.style.marginTop = '10px';
+    progressBar.style.position = 'relative';
+    progressBar.style.overflow = 'hidden';
+    progressBar.style.height = '30px';
+
+    // 创建进度条
+    var progress = document.createElement('div');
+    progress.style.height = '100%';
+    progress.style.background = 'linear-gradient(90deg, #4caf50, #81c784)';
+    progress.style.width = '0%';
+    progress.style.borderRadius = '5px';
+    progress.style.textAlign = 'center';
+    progress.style.color = '#fff';
+    progress.style.fontWeight = 'bold';
+    progress.style.transition = 'width 0.2s ease';
+    progressBar.appendChild(progress);
+
+    // 创建速度显示
+    var speedText = document.createElement('span');
+    speedText.style.position = 'absolute';
+    speedText.style.right = '10px';
+    speedText.style.top = '5px';
+    speedText.style.color = '#555';
+    speedText.style.fontSize = '12px';
+
+    progressBar.appendChild(speedText);
+    uploadStatus.appendChild(progressBar);
+
+    var formData = new FormData();
+    formData.append('file', file);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/upload', true);
+
+    // 定义起始时间和已上传数据
+    var startTime = Date.now();
+    var uploadedBytes = 0;
+
+    // 监听上传进度事件
+    xhr.upload.onprogress = function (event) {
+        if (event.lengthComputable) {
+            var percent = Math.round((event.loaded / event.total) * 100);
+            progress.style.width = percent + '%';
+            progress.innerText = percent + '%';
+
+            // 计算上传速度
+            var currentTime = Date.now();
+            var timeElapsed = (currentTime - startTime) / 1000; // 秒
+            var currentUploaded = event.loaded;
+            var speed = ((currentUploaded - uploadedBytes) / 1024) / (timeElapsed || 1); // kB/s
+            uploadedBytes = currentUploaded;
+
+            // 格式化速度
+            var speedTextContent = speed > 1024
+                ? (speed / 1024).toFixed(2) + ' MB/s'
+                : speed.toFixed(2) + ' kB/s';
+            speedText.innerText = speedTextContent;
+
+            // 重置时间和起始点
+            startTime = currentTime;
         }
+    };
+
+    // 上传完成
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            uploadStatus.innerHTML = "<p style='color: green;'>文件上传成功！</p>";
+            loadFiles(); // 刷新文件列表
+        } else {
+            uploadStatus.innerHTML = "<p style='color: red;'>文件上传失败，请重试。</p>";
+        }
+    };
+
+    // 上传失败
+    xhr.onerror = function () {
+        uploadStatus.innerHTML = "<p style='color: red;'>文件上传失败，网络错误。（重新选择文件再上传试试）</p>";
+    };
+
+    // 开始上传
+    xhr.send(formData);
+}
+
 
         // 页面加载时获取文件列表
         window.onload = function() {
