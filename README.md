@@ -1,6 +1,3 @@
-以下是一个 **中英双语版** 的 `README.md` 模板，适合你的项目：
-
----
 
 # Flask File Transfer with Progress | 基于 Flask 的文件传输工具
 
