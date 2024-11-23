@@ -1,83 +1,147 @@
-## 项目介绍
+以下是一个 **中英双语版** 的 `README.md` 模板，适合你的项目：
 
-这是一个基于 Flask 和前端技术的双向文件传输和文本处理工具。该项目允许用户在网页上上传文件、下载服务器上的文件，并通过简单的接口发送和复制文本数据。主要功能包括：
+---
 
-- **文件上传**：用户可以通过前端页面选择文件并上传到服务器。
-- **文件下载**：前端页面会动态显示服务器上的文件列表，用户可以点击下载。
-- **文本传递与复制**：用户可以在前端输入文本，并通过接口处理后返回，同时将文本复制到剪贴板。
+# Flask File Transfer with Progress | 基于 Flask 的文件传输工具
 
-## 特性
+A simple and user-friendly file transfer application built using Flask.  
+这是一个基于 Flask 构建的简单且用户友好的文件传输工具。
 
-1. **文件上传与下载**：支持双向文件传输，用户可以上传文件到服务器，同时也可以下载服务器中的文件。
-2. **文本传递与复制功能**：可以将前端输入的文本发送给后端，处理后自动复制到剪贴板。
-3. **跨域支持**：启用了 Flask-CORS，支持跨域请求。
+---
 
-## 项目结构
+## Features | 功能特点
 
-```bash
-├── app.py               # Flask 后端主程序
-├── templates/
-│   └── backendpy.html    # 前端 HTML 文件
-└── UPLOAD_FOLDER/        # 上传的文件将存储在此目录
-```
+- **File Upload with Progress | 上传进度显示**: 
+  Users can upload files through a browser and see the upload progress and speed in real time.  
+  用户可以通过浏览器上传文件，并实时查看上传进度和速度。
 
-## 使用说明
+- **File Download | 文件下载**: 
+  Easily download files directly from the browser.  
+  可以直接通过浏览器轻松下载文件。
 
-### 环境要求
+- **Responsive UI | 响应式界面**: 
+  Optimized for both desktop and mobile devices with a clean and modern design.  
+  界面设计简洁现代，支持桌面端和移动端。
 
-- Python 3.x
+- **Folder Structure Support | 支持文件夹结构**: 
+  Organize files in nested folders, dynamically rendered in the UI.  
+  支持嵌套文件夹结构，并在界面上动态展示。
+
+- **Real-time Updates | 实时更新**: 
+  File lists are updated in real time after uploads using Socket.IO.  
+  通过 Socket.IO 实现文件列表实时更新。
+
+---
+
+## Demo | 演示
+
+![PixPin_2024-11-24_00-24-50](https://github.com/user-attachments/assets/b4816b49-24ea-4ff5-8fb4-6a755bb69d3e)
+
+
+---
+
+## Requirements | 环境要求
+
+- Python 3.7 or above | Python 3.7 或更高版本
 - Flask
+- Flask-SocketIO
 - Flask-CORS
-- pyperclip
 
-### 安装步骤
+---
 
-1. 克隆本仓库到本地：
+## Installation | 安装步骤
 
+### 1. Clone the repository | 克隆仓库
 ```bash
-git clone https://github.com/your-repo-name/your-project.git
+git clone https://github.com/yourusername/Flask-File-Transfer-with-Progress.git
+cd Flask-File-Transfer-with-Progress
 ```
 
-2. 安装所需的 Python 包：
-
+### 2. Install dependencies | 安装依赖
 ```bash
 pip install -r requirements.txt
 ```
 
-3. 运行程序：
-
+### 3. Run the application | 启动应用
 ```bash
-python app.py
+python backend.py
 ```
 
-程序默认会运行在 `http://localhost:7000` 上。
+### 4. Access the application | 访问应用
+Open your browser and navigate to `http://127.0.0.1:7001`.  
+打开浏览器并访问 `http://127.0.0.1:7001`。
 
-### 使用方法
+---
 
-#### 1. 文件上传
+## Folder Structure | 文件结构
 
-- 在首页中，点击“选择文件”按钮，选择需要上传的文件。
-- 点击“上传文件”按钮，文件会被上传到服务器的 `UPLOAD_FOLDER` 目录。
-- 上传成功后，前端页面会刷新文件列表，显示可供下载的文件。
+```
+Flask-File-Transfer-with-Progress/
+├── backend.py             # Main backend logic (Flask app) | 主后端逻辑（Flask 应用）
+├── templates/
+│   └── backendpy.html     # HTML template for the application | 应用的 HTML 模板
+├── UPLOAD_FOLDER/         # Directory where uploaded files are stored | 上传文件存储目录
+├── requirements.txt       # Python dependencies | Python 依赖列表
+└── README.md              # Project documentation | 项目文档
+```
 
-#### 2. 文件下载
+---
 
-- 首页中会列出当前服务器的所有文件，点击文件名即可下载该文件。
+## API Endpoints | API 接口
 
-#### 3. 文本处理
+### 1. File Upload | 文件上传
+- **Endpoint | 接口**: `/upload`
+- **Method | 请求方式**: `POST`
+- **Description | 描述**: Upload a file to the server.  
+  将文件上传到服务器。
+- **Response | 响应**: 
+    ```json
+    {
+      "message": "File uploaded successfully",
+      "filename": "example.txt"
+    }
+    ```
 
-- 在文本框中输入想要发送的数据，焦点离开文本框时，数据会自动发送到后端。
-- 服务器响应后，前端会显示处理后的文本，并自动复制到剪贴板，用户可以点击“复制”按钮再次手动复制。
+### 2. File List | 文件列表
+- **Endpoint | 接口**: `/files`
+- **Method | 请求方式**: `GET`
+- **Description | 描述**: Retrieve the list of files and folders.  
+  获取文件和文件夹列表。
 
-## 注意事项
+### 3. File Download | 文件下载
+- **Endpoint | 接口**: `/download/<file_path>`
+- **Method | 请求方式**: `GET`
+- **Description | 描述**: Download a specific file.  
+  下载指定文件。
 
-- **文件上传目录**：确保项目根目录下存在 `UPLOAD_FOLDER` 目录，如果没有该目录，程序会自动创建。
-- **端口与IP**：默认情况下，程序会在本地的 `7000` 端口运行，可以根据需要在 `app.py` 文件中更改端口设置。
+---
 
-## 贡献
+## Screenshots | 截图
 
-如果你想为此项目贡献代码，请 fork 本项目并提交 Pull Request。我们欢迎所有的贡献和建议！
+### 1. File Upload Page | 文件上传界面
 
-## 许可证
+![PixPin_2024-11-24_00-21-13](https://github.com/user-attachments/assets/c15377e3-d0f3-4588-b4ea-d5f4051d587d)
 
-本项目遵循 MIT 许可证。
+
+### 2. File List | 文件列表
+
+![PixPin_2024-11-24_00-22-39](https://github.com/user-attachments/assets/d5b05a5f-c621-4064-875e-036a3abdabd4)
+
+
+---
+
+## Contributing | 贡献
+
+Contributions are welcome! Feel free to open an issue or submit a pull request.  
+欢迎贡献代码或建议！您可以提交问题或创建拉取请求。
+
+---
+
+## License | 许可协议
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.  
+此项目基于 MIT 协议授权 - 详情请查看 [LICENSE](LICENSE) 文件。
+
+---
+
+通过这样的中英双语版本，用户无论是英语还是中文用户都可以轻松理解和使用你的项目。你还可以根据具体需求补充内容，如示例演示或其他指南！
