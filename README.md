@@ -139,6 +139,3 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.  
 此项目基于 MIT 协议授权 - 详情请查看 [LICENSE](LICENSE) 文件。
 
----
-
-通过这样的中英双语版本，用户无论是英语还是中文用户都可以轻松理解和使用你的项目。你还可以根据具体需求补充内容，如示例演示或其他指南！
