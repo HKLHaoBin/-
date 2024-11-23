@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main  # 推送到 main 分支时触发
-  workflow_dispatch: # 手动触发工作流
+  workflow_dispatch: # 支持手动触发工作流
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'  # 使用合适的 Python 版本
+        python-version: '3.10'  # 使用适合项目的 Python 版本
 
     # 3. 安装依赖
     - name: Install dependencies
@@ -28,12 +28,19 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
 
-    # 4. 构建 EXE 文件
+    # 4. 创建自定义 hooks 文件夹（解决 pyperclip 或动态模块问题）
+    - name: Create custom hooks
+      run: |
+        mkdir -p hooks
+        echo "from PyInstaller.utils.hooks import collect_all" > hooks/hook-pyperclip.py
+        echo "datas, binaries, hiddenimports = collect_all('pyperclip')" >> hooks/hook-pyperclip.py
+
+    # 5. 构建 EXE 文件
     - name: Build EXE file
       run: |
-        pyinstaller --clean --onefile --hidden-import=all --collect-all=all backend.py
+        pyinstaller --clean --onefile --additional-hooks-dir=hooks --hidden-import=pyperclip --collect-all=pyperclip backend.py
 
-    # 5. 上传 EXE 文件作为工件
+    # 6. 上传 EXE 文件作为工件
     - name: Upload EXE file as artifact
       uses: actions/upload-artifact@v3
       with:
