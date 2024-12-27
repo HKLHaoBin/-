@@ -26,7 +26,7 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          pyinstaller --onefile --hidden-import=flask backend.py
+          pyinstaller --onefile --hidden-import=flask --additional-hooks-dir=hooks backend.py
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
