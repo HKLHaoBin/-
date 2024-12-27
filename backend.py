@@ -70,7 +70,7 @@ def get_files_structure(directory):
     # 返回存储文件和文件夹信息的列表
     return items
 
-
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # 初始化 Flask 应用
 app = Flask(__name__)
 app.secret_key = 'your_random_secret_key'
