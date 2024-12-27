@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
@@ -26,11 +26,11 @@ jobs:
 
     - name: Build EXE with PyInstaller
       run: |
-        pyinstaller backend.py --onefile \
-        --hidden-import flask \
-        --hidden-import werkzeug \
-        --add-data "templates;templates" \
-        --name FlaskFileTransfer \
+        pyinstaller backend.py --onefile `
+        --hidden-import flask `
+        --hidden-import werkzeug `
+        --add-data "templates;templates" `
+        --name FlaskFileTransfer `
         --noconsole 
 
     - name: Upload EXE as Artifact
